@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ValuteRepository extends JpaRepository<Valute, Integer> {
+    Valute findByCharCode(String charCode);
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+</head>
+<body>
+    <h1>Конвертер валют</h1>
+    <form th:action="@{/converter}" method="post">
+        <select name="fromValute">
+            <option value="" disabled selected>Выберите исходную валюту</option>
+            <option
+                    th:each="valute : ${valutes}"
+                    th:value="${valute.id}"
+                    th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
+            ></option>
+        </select>
+        <input type="text" name="value"/>
+        <br/>
+        <select name="toValute">
+            <option value="" disabled selected>Выберите конечную валюту</option>
+            <option
+                    th:each="valute : ${valutes}"
+                    th:value="${valute.id}"
+                    th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
+            ></option>
+        </select>
+        <input type="text" id="result" readonly/>
+        <br/>
+        <button type="submit">Конвертировать</button>
+    </form>
+</body>
+</html>

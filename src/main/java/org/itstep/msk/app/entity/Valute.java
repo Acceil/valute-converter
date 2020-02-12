@@ -68,4 +68,18 @@ public class Valute {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Valute)) {
+            return false;
+        }
+
+        return ((Valute) obj).getId().equals(id);
+    }
 }

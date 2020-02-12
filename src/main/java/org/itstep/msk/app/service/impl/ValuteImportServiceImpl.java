@@ -6,7 +6,6 @@ import org.itstep.msk.app.repository.RateRepository;
 import org.itstep.msk.app.repository.ValuteRepository;
 import org.itstep.msk.app.service.ValuteImportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -135,12 +134,7 @@ public class ValuteImportServiceImpl implements ValuteImportService {
         String key = getRateKey(date);
 
         if (!ratesFromDb.keySet().contains(key)) {
-            Rate example = new Rate();
-            example.setDate(date.getTime());
-            List<Rate> rates = rateRepository.findAll(
-                    Example.of(example),
-                    Sort.by("rate_value")
-            );
+            List<Rate> rates = rateRepository.findAllByDateOrderByValueAsc(date.getTime());
             ratesFromDb.put(key, rates);
         }
 
@@ -211,6 +205,7 @@ public class ValuteImportServiceImpl implements ValuteImportService {
                                 .getElementsByTagName("Value")
                                 .item(0)
                                 .getTextContent()
+                                .replace(',', '.')
                 )
         );
 
