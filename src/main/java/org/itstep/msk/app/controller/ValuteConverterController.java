@@ -1,17 +1,18 @@
 package org.itstep.msk.app.controller;
 
 import org.itstep.msk.app.entity.Valute;
+import org.itstep.msk.app.exception.NotFoundException;
 import org.itstep.msk.app.repository.ValuteRepository;
 import org.itstep.msk.app.service.ValuteConvertService;
 import org.itstep.msk.app.service.ValuteImportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -59,5 +60,37 @@ public class ValuteConverterController {
                 toValute,
                 Double.valueOf(value)
         );
+    }
+
+    // http://localhost:9999/valutes?page=3
+    @GetMapping("/valutes")
+    public String valutes(
+            Model model,
+            @RequestParam(required = false, defaultValue = "1")
+            Integer page
+    ) {
+        // Объект с настройками пагинации
+        Pageable pagination = PageRequest.of(
+                page - 1, // Номер страницы (начинается с 0)
+                10, // Кол-во объектов на странице
+                Sort.by("name").ascending() // Сортировка
+        );
+        // "Страница" с валютами
+        Page<Valute> valutes = valuteRepository.findAll(pagination);
+
+        if (valutes.getTotalPages() < page || page < 1) {
+            throw new NotFoundException();
+        }
+
+        // Коллекция валют
+        model.addAttribute("valutes", valutes.getContent());
+        // Текущий номер страницы
+        model.addAttribute("page", valutes.getNumber() + 1);
+        // Общее кол-во страниц
+        model.addAttribute("pages", valutes.getTotalPages());
+        // Общее число валют
+        model.addAttribute("total", valutes.getTotalElements());
+
+        return "valutes";
     }
 }

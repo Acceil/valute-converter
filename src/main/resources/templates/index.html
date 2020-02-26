@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Demo</title>
+    <title>Конвертер валют</title>
 </head>
 <body>
     <h1>Конвертер валют</h1>
+    <a th:href="@{/valutes}" target="_blank">Все валюты</a>
     <form th:action="@{/converter}" method="post">
         <select name="fromValute">
             <option value="" disabled selected>Выберите исходную валюту</option>
