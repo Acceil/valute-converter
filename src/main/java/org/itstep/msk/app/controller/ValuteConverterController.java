@@ -18,6 +18,8 @@ import java.util.List;
 
 @Controller
 public class ValuteConverterController {
+    final private static int VALUTES_PAGE_SIZE = 10;
+
     @Autowired
     private ValuteImportService valuteImportService;
 
@@ -72,7 +74,7 @@ public class ValuteConverterController {
         // Объект с настройками пагинации
         Pageable pagination = PageRequest.of(
                 page - 1, // Номер страницы (начинается с 0)
-                10, // Кол-во объектов на странице
+                VALUTES_PAGE_SIZE, // Кол-во объектов на странице
                 Sort.by("name").ascending() // Сортировка
         );
         // "Страница" с валютами
