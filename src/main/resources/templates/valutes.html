@@ -27,10 +27,10 @@
         </tbody>
     </table>
     <h3>
-        <a th:if="${page} > 1"th:href="@{/valutes(page=${page}-1)}">&laquo;</a>
-        <span th:text="${page}"></span> /
+        <a th:if="${pagination.pageNumber} > 0" th:href="@{/valutes(page=${pagination.pageNumber} - 1,size=${pagination.pageSize})}">&laquo;</a>
+        <span th:text="${pagination.pageNumber} + 1"></span> /
         <span th:text="${pages}"></span>
-        <a th:if="${page} < ${pages}" th:href="@{/valutes(page=${page}+1)}">&raquo;</a>
+        <a th:if="${pagination.pageNumber} < ${pages} - 1" th:href="@{/valutes(page=${pagination.pageNumber} + 1,size=${pagination.pageSize})}">&raquo;</a>
     </h3>
 </body>
 </html>

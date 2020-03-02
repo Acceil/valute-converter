@@ -7,8 +7,8 @@
 <body>
     <h1>Конвертер валют</h1>
     <a th:href="@{/valutes}" target="_blank">Все валюты</a>
-    <form th:action="@{/converter}" method="post">
-        <select name="fromValute">
+    <form th:action="@{/converter}" method="post" id="converter-form">
+        <select name="valuteFrom">
             <option value="" disabled selected>Выберите исходную валюту</option>
             <option
                     th:each="valute : ${valutes}"
@@ -18,7 +18,7 @@
         </select>
         <input type="text" name="value"/>
         <br/>
-        <select name="toValute">
+        <select name="valuteTo">
             <option value="" disabled selected>Выберите конечную валюту</option>
             <option
                     th:each="valute : ${valutes}"
@@ -30,5 +30,31 @@
         <br/>
         <button type="submit">Конвертировать</button>
     </form>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script>
+        $("#converter-form").submit(
+            (event) => {
+                // Запрещаем форме ее поведение по умолчанию
+                // т.е. не перенаправляем пользователя на другую страницу при отправке формы
+                event.preventDefault();
+                // Фоновый запрос к серверу за результатом конвертации
+                $.ajax({
+                    url: "/converter",
+                    method: "POST",
+                    data: /*"valuteFrom=1&valuteTo=2&value=100"*/
+                        $("#converter-form").serialize(),
+                    success: (result) => {
+                        $("#result").val(result); // Помещаем результат конвертации в поле ответа
+                        // Если же вызвать метод .val() у поля формы без аргументов, то нам вернется его текущее значение
+                    },
+                    error: () => {
+                        $("#result").val("error");
+                    }
+                });
+                return false;
+            }
+        );
+
+    </script>
 </body>
 </html>
