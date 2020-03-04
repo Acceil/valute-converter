@@ -7,6 +7,9 @@
 <body>
     <h1>Конвертер валют</h1>
     <a th:href="@{/valutes}" target="_blank">Все валюты</a>
+    <br/>
+    <a th:href="@{/conversions}" target="_blank">История конвертаций валют</a>
+    <br/>
     <form th:action="@{/converter}" method="post" id="converter-form">
         <select name="valuteFrom">
             <option value="" disabled selected>Выберите исходную валюту</option>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>История конвертаций валют</title>
+</head>
+<body>
+    <h1>История конвертаций валют</h1>
+    <h2>
+        Всего найдено:
+        <span th:text="${total}"></span>
+    </h2>
+    <form th:action="@{/conversions}" method="get" th:object="${filter}">
+        <select th:field="*{valuteFrom}">
+            <option value="" disabled selected>Выберите исходную валюту</option>
+            <option
+                    th:each="valute : ${valutes}"
+                    th:value="${valute.id}"
+                    th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
+            ></option>
+        </select>
+        <select th:field="*{valuteTo}">
+            <option value="" disabled selected>Выберите итоговую валюту</option>
+            <option
+                    th:each="valute : ${valutes}"
+                    th:value="${valute.id}"
+                    th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
+            ></option>
+        </select>
+        <br/>
+        Исходная сумма: <input th:field="*{valueFrom}">&mdash;<input th:field="*{valueTo}">
+        <br/>
+        Итоговая сумма: <input th:field="*{resultFrom}">&mdash;<input th:field="*{resultTo}">
+        <br/>
+        <button type="submit">Найти</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Исходная валюта</th>
+                <th>Код</th>
+                <th>Исходная сумма</th>
+                <th>Итоговая валюта</th>
+                <th>Код</th>
+                <th>Итоговая сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="conversion : ${conversions}">
+                <td th:text="${conversion.date}"></td>
+                <td th:text="${conversion.valuteFrom.name}"></td>
+                <td th:text="${conversion.valuteFrom.charCode}"></td>
+                <td th:text="${conversion.value}"></td>
+                <td th:text="${conversion.valuteTo.name}"></td>
+                <td th:text="${conversion.valuteTo.charCode}"></td>
+                <td th:text="${conversion.result}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>
+        <a th:if="${pagination.pageNumber} > 0" th:href="@{/conversions(page=${pagination.pageNumber} - 1,size=${pagination.pageSize})}">&laquo;</a>
+        <span th:text="${pagination.pageNumber} + 1"></span> /
+        <span th:text="${pages}"></span>
+        <a th:if="${pagination.pageNumber} < ${pages} - 1" th:href="@{/conversions(page=${pagination.pageNumber} + 1,size=${pagination.pageSize})}">&raquo;</a>
+    </h3>
+</body>
+</html>

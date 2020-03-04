@@ -5,6 +5,9 @@ import org.itstep.msk.app.entity.ValuteConversion;
 import org.itstep.msk.app.repository.ValuteConversionRepository;
 import org.itstep.msk.app.service.ValuteConversionHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -33,7 +36,12 @@ public class ValuteConversionHistoryServiceImpl implements ValuteConversionHisto
     }
 
     @Override
-    public List<ValuteConversion> getHistory() {
-        return null;
+    public Page<ValuteConversion> getHistory(Pageable pagination) {
+        return conversionRepository.findAll(pagination);
+    }
+
+    @Override
+    public Page<ValuteConversion> getHistory(Specification<ValuteConversion> specification, Pageable pagination) {
+        return conversionRepository.findAll(specification, pagination);
     }
 }
