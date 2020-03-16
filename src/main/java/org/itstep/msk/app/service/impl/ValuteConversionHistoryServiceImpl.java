@@ -1,5 +1,6 @@
 package org.itstep.msk.app.service.impl;
 
+import org.itstep.msk.app.entity.User;
 import org.itstep.msk.app.entity.Valute;
 import org.itstep.msk.app.entity.ValuteConversion;
 import org.itstep.msk.app.repository.ValuteConversionRepository;
@@ -22,8 +23,9 @@ public class ValuteConversionHistoryServiceImpl implements ValuteConversionHisto
     }
 
     @Override
-    public void save(Valute valuteFrom, Valute valuteTo, Double value, Double result) {
+    public void save(User user, Valute valuteFrom, Valute valuteTo, Double value, Double result) {
         ValuteConversion conversion = new ValuteConversion();
+        conversion.setUser(user);
         conversion.setValuteFrom(valuteFrom);
         conversion.setValue(value);
         conversion.setValuteTo(valuteTo);
@@ -35,12 +37,12 @@ public class ValuteConversionHistoryServiceImpl implements ValuteConversionHisto
     }
 
     @Override
-    public Page<ValuteConversion> getHistory(Pageable pagination) {
-        return conversionRepository.findAll(pagination);
+    public Page<ValuteConversion> getHistory(User user, Pageable pagination) {
+        return conversionRepository.findAllByUser(user, pagination);
     }
 
     @Override
-    public Page<ValuteConversion> getHistory(Specification<ValuteConversion> specification, Pageable pagination) {
-        return conversionRepository.findAll(specification, pagination);
+    public Page<ValuteConversion> getHistory(User user, Specification<ValuteConversion> specification, Pageable pagination) {
+        return conversionRepository.findAllByUser(user, specification, pagination);
     }
 }

@@ -29,6 +29,10 @@ public class ValuteConversion {
     @Column(name = "conversion_result")
     private Double result;
 
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +75,13 @@ public class ValuteConversion {
 
     public void setResult(Double result) {
         this.result = result;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

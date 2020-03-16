@@ -6,9 +6,21 @@
 </head>
 <body>
     <h1>Конвертер валют</h1>
+    <div sec:authorize="isAuthenticated()">
+        <span sec:authentication="name"></span>
+        &nbsp;|&nbsp;
+        <a th:href="@{/logout}">Выйти</a>
+        <br/>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+        <a th:href="@{/login}">Войти</a>
+        &nbsp;|&nbsp;
+        <a th:href="@{/registration}">Зарегистрироваться</a>
+        <br/>
+    </div>
     <a th:href="@{/valutes}" target="_blank">Все валюты</a>
     <br/>
-    <a th:href="@{/conversions}" target="_blank">История конвертаций валют</a>
+    <a th:href="@{/conversions}" target="_blank" sec:authorize="isAuthenticated()">История конвертаций валют</a>
     <br/>
     <form th:action="@{/converter}" method="post" id="converter-form">
         <select name="valuteFrom">

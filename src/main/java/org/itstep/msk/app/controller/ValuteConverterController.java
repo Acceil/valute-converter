@@ -1,9 +1,11 @@
 package org.itstep.msk.app.controller;
 
+import org.itstep.msk.app.entity.User;
 import org.itstep.msk.app.entity.Valute;
 import org.itstep.msk.app.entity.ValuteConversion;
 import org.itstep.msk.app.exception.NotFoundException;
 import org.itstep.msk.app.model.ValuteConversionFilter;
+import org.itstep.msk.app.repository.UserRepository;
 import org.itstep.msk.app.repository.ValuteConversionRepository;
 import org.itstep.msk.app.repository.ValuteRepository;
 import org.itstep.msk.app.service.ValuteConversionHistoryService;
@@ -14,12 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -38,6 +40,9 @@ public class ValuteConverterController {
 
     @Autowired
     private ValuteRepository valuteRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -65,7 +70,8 @@ public class ValuteConverterController {
     public Double converter(
             @RequestParam Valute valuteFrom,
             @RequestParam Valute valuteTo,
-            @RequestParam String value
+            @RequestParam String value,
+            Principal principal
     ) {
         Double result = valuteConvertService.convert(
                 valuteFrom,
@@ -73,12 +79,16 @@ public class ValuteConverterController {
                 Double.valueOf(value)
         );
 
-        historyService.save(
-                valuteFrom,
-                valuteTo,
-                Double.valueOf(value),
-                result
-        );
+        if (principal != null) {
+            User user = userRepository.findByEmail(principal.getName());
+            historyService.save(
+                    user,
+                    valuteFrom,
+                    valuteTo,
+                    Double.valueOf(value),
+                    result
+            );
+        }
 
         return result;
     }
@@ -126,8 +136,11 @@ public class ValuteConverterController {
                     direction = Sort.Direction.DESC
             )
             Pageable pagination,
-            @ModelAttribute ValuteConversionFilter filter
+            @ModelAttribute ValuteConversionFilter filter,
+            Principal principal
     ) {
+        User user = userRepository.findByEmail(principal.getName());
+
         Specification<ValuteConversion> specification = null;
 
         if (filter.getValuteFrom() != null) {
@@ -165,7 +178,7 @@ public class ValuteConverterController {
         }
 
         Page<ValuteConversion> conversions = historyService.getHistory(
-                specification,
+                user,
                 pagination
         );
 

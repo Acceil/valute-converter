@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         String usersQuery = "SELECT email, password, 1 as active FROM users WHERE email = ?";
         // Запрос ролей пользователя для авторизации
         String authoritiesQuery =
-                "SELECT u.email, r.role "
+                "SELECT u.email, ur.role "
                 + "FROM users u "
                 + "INNER JOIN user_roles ur ON ur.user_id = u.id "
                 + "WHERE u.email = ?";
@@ -45,6 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/**").permitAll() // Разрешить доступ всем
+                .antMatchers("/conversions").authenticated()
                 .antMatchers("/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name()) // Разрешить доступ только пользователям с ролью ADMIN
                 .anyRequest().authenticated(); // По остальным урлам разрешить доступ только залогиненным пользователям
 

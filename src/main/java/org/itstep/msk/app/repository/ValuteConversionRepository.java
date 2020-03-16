@@ -1,7 +1,10 @@
 package org.itstep.msk.app.repository;
 
+import org.itstep.msk.app.entity.User;
 import org.itstep.msk.app.entity.Valute;
 import org.itstep.msk.app.entity.ValuteConversion;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -12,6 +15,10 @@ import javax.persistence.criteria.Predicate;
 
 @Repository
 public interface ValuteConversionRepository extends JpaRepository<ValuteConversion, Integer>, JpaSpecificationExecutor<ValuteConversion> {
+    Page<ValuteConversion> findAllByUser(User user, Pageable pagination);
+
+    Page<ValuteConversion> findAllByUser(User user, Specification specification, Pageable pagination);
+
     // Спецификация для фильтрации конвертаций по исходной валюте
     static Specification<ValuteConversion> hasValuteFrom(Valute valuteFrom) {
         return (conversion, criteriaQuery, criteriaBuilder) ->
