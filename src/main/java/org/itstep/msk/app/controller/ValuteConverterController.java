@@ -179,6 +179,7 @@ public class ValuteConverterController {
 
         Page<ValuteConversion> conversions = historyService.getHistory(
                 user,
+                specification,
                 pagination
         );
 

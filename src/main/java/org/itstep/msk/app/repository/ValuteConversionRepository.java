@@ -17,7 +17,13 @@ import javax.persistence.criteria.Predicate;
 public interface ValuteConversionRepository extends JpaRepository<ValuteConversion, Integer>, JpaSpecificationExecutor<ValuteConversion> {
     Page<ValuteConversion> findAllByUser(User user, Pageable pagination);
 
-    Page<ValuteConversion> findAllByUser(User user, Specification specification, Pageable pagination);
+    static Specification<ValuteConversion> hasUser(User user) {
+        return (conversion, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                        conversion.get("user"),
+                        user
+                );
+    }
 
     // Спецификация для фильтрации конвертаций по исходной валюте
     static Specification<ValuteConversion> hasValuteFrom(Valute valuteFrom) {

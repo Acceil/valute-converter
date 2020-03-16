@@ -44,10 +44,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/**").permitAll() // Разрешить доступ всем
                 .antMatchers("/conversions").authenticated()
-                .antMatchers("/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name()) // Разрешить доступ только пользователям с ролью ADMIN
-                .anyRequest().authenticated(); // По остальным урлам разрешить доступ только залогиненным пользователям
+                .antMatchers("/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name())
+                .anyRequest().permitAll();
 
         http.csrf().disable();
 
@@ -66,7 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // Настройка обработки ошибок доступа
         http.exceptionHandling()
-                .accessDeniedPage("/access-denied");
+                .accessDeniedPage("/error");
     }
 
     // Настройка урлов, которые модуль security игнорирует

@@ -43,6 +43,11 @@ public class ValuteConversionHistoryServiceImpl implements ValuteConversionHisto
 
     @Override
     public Page<ValuteConversion> getHistory(User user, Specification<ValuteConversion> specification, Pageable pagination) {
-        return conversionRepository.findAllByUser(user, specification, pagination);
+        specification = specification != null
+            ? specification.and(
+                    ValuteConversionRepository.hasUser(user)
+            ) : ValuteConversionRepository.hasUser(user);
+
+        return conversionRepository.findAll(specification, pagination);
     }
 }
