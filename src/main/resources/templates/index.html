@@ -3,49 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Конвертер валют</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
 </head>
 <body>
-    <h1>Конвертер валют</h1>
-    <div sec:authorize="isAuthenticated()">
-        <span sec:authentication="name"></span>
-        &nbsp;|&nbsp;
-        <a th:href="@{/logout}">Выйти</a>
-        <br/>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" th:href="@{/}">Конвертер валют</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a th:href="@{/valutes}" class="nav-link">Все валюты</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="nav-link">Войти</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/registration}" class="nav-link">Зарегистрироваться</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/conversions}" class="nav-link">История конвертаций валют</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <span sec:authentication="name" class="navbar-text"></span>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/logout}" class="nav-link">Выйти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5 pt-5">
+        <h1>Конвертер валют</h1>
+        <form th:action="@{/converter}" method="post" id="converter-form">
+            <div class="form-group row">
+                <div class="col-12 col-md-7">
+                    <select name="valuteFrom" class="form-control">
+                        <option value="" disabled selected>Выберите исходную валюту</option>
+                        <option
+                                th:each="valute : ${valutes}"
+                                th:value="${valute.id}"
+                                th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
+                        ></option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-5">
+                    <input type="text" name="value" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-12 col-md-7">
+                    <select name="valuteTo" class="form-control">
+                        <option value="" disabled selected>Выберите конечную валюту</option>
+                        <option
+                                th:each="valute : ${valutes}"
+                                th:value="${valute.id}"
+                                th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
+                        ></option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-5">
+                    <input type="text" id="result" class="form-control" readonly/>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Конвертировать</button>
+        </form>
     </div>
-    <div sec:authorize="!isAuthenticated()">
-        <a th:href="@{/login}">Войти</a>
-        &nbsp;|&nbsp;
-        <a th:href="@{/registration}">Зарегистрироваться</a>
-        <br/>
-    </div>
-    <a th:href="@{/valutes}" target="_blank">Все валюты</a>
-    <br/>
-    <a th:href="@{/conversions}" target="_blank" sec:authorize="isAuthenticated()">История конвертаций валют</a>
-    <br/>
-    <form th:action="@{/converter}" method="post" id="converter-form">
-        <select name="valuteFrom">
-            <option value="" disabled selected>Выберите исходную валюту</option>
-            <option
-                    th:each="valute : ${valutes}"
-                    th:value="${valute.id}"
-                    th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
-            ></option>
-        </select>
-        <input type="text" name="value"/>
-        <br/>
-        <select name="valuteTo">
-            <option value="" disabled selected>Выберите конечную валюту</option>
-            <option
-                    th:each="valute : ${valutes}"
-                    th:value="${valute.id}"
-                    th:text="${valute.name} + ' (' + ${valute.charCode} + ')'"
-            ></option>
-        </select>
-        <input type="text" id="result" readonly/>
-        <br/>
-        <button type="submit">Конвертировать</button>
-    </form>
     <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
     <script>
         $("#converter-form").submit(
             (event) => {
@@ -69,7 +97,6 @@
                 return false;
             }
         );
-
     </script>
 </body>
 </html>

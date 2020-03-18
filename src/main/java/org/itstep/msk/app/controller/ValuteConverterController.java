@@ -122,6 +122,7 @@ public class ValuteConverterController {
         // Общее число валют
         model.addAttribute("total", valutes.getTotalElements());
         model.addAttribute("pagination", pagination);
+        model.addAttribute("valutesPage", valutes);
 
         return "valutes";
     }
