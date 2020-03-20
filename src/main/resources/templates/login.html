@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход</title>
-</head>
+<head th:replace="~{fragments/head::head('Вход')}"></head>
 <body>
-    <h1>Вход</h1>
-    <form th:action="@{/login}" method="post">
-        <span th:if="${error}" style="color:red;text-width:bold">Неправильный логин или пароль!</span>
-        <br/>
-        E-mail:
-        <input type="text" name="email"/>
-        <br/>
-        Пароль:
-        <input type="password" name="password"/>
-        <br/>
-        <button type="submit">Войти</button>
-    </form>
+    <div th:replace="~{fragments/header::header}"></div>
+    <div class="container mt-5 pt-5">
+        <h1>Вход</h1>
+        <span th:text="${demoObject.getText()}"></span>
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="email">Адрес электронной почты</label>
+                <input id="email" type="text" name="email" th:class="${error} ? 'form-control is-invalid' : 'form-control'"/>
+                <div class="invalid-feedback">
+                    Неправильный логин...
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input id="password" type="password" name="password" th:class="${error} ? 'form-control is-invalid' : 'form-control'"/>
+                <div class="invalid-feedback">
+                    ...или пароль.
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Войти</button>
+        </form>
+    </div>
 </body>
 </html>

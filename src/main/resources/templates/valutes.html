@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Валюты</title>
-</head>
+<head th:replace="~{fragments/head::head('Валюты')}"></head>
 <body>
-    <h1>Валюты</h1>
-    <h2>
-        Всего найдено:
-        <span th:text="${valutesPage.getTotalElements()}"></span>
-    </h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Код</th>
-                <th>Наименование</th>
-                <th>Номинал</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="valute : ${valutes}">
-                <td th:text="${valute.charCode}"></td>
-                <td th:text="${valute.name}"></td>
-                <td th:text="${valute.nominal}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <h3>
-        <a th:if="${pagination.pageNumber} > 0" th:href="@{/valutes(page=${pagination.pageNumber} - 1,size=${pagination.pageSize})}">&laquo;</a>
-        <span th:text="${pagination.pageNumber} + 1"></span> /
-        <span th:text="${pages}"></span>
-        <a th:if="${pagination.pageNumber} < ${pages} - 1" th:href="@{/valutes(page=${pagination.pageNumber} + 1,size=${pagination.pageSize})}">&raquo;</a>
-    </h3>
+    <div th:replace="~{fragments/header::header}"></div>
+    <div class="container mt-5 pt-5">
+        <h1>Валюты</h1>
+        <h2>
+            Всего найдено:
+            <span th:text="${valutesPage.getTotalElements()}"></span>
+        </h2>
+        <table class="table table-sm table-hover table-success">
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Наименование</th>
+                    <th>Номинал</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="valute : ${valutes}">
+                    <td th:text="${valute.charCode}"></td>
+                    <td th:text="${valute.name}"></td>
+                    <td th:text="${valute.nominal}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>
+            <a th:if="${pagination.pageNumber} > 0" th:href="@{/valutes(page=${pagination.pageNumber} - 1,size=${pagination.pageSize})}">&laquo;</a>
+            <span th:text="${pagination.pageNumber} + 1"></span> /
+            <span th:text="${pages}"></span>
+            <a th:if="${pagination.pageNumber} < ${pages} - 1" th:href="@{/valutes(page=${pagination.pageNumber} + 1,size=${pagination.pageSize})}">&raquo;</a>
+        </h3>
+    </div>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
 </body>
 </html>

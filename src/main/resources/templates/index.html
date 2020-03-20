@@ -1,41 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Конвертер валют</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
-</head>
+<head th:replace="~{fragments/head::head('Конвертер валют')}"></head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" th:href="@{/}">Конвертер валют</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a th:href="@{/valutes}" class="nav-link">Все валюты</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/login}" class="nav-link">Войти</a>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/registration}" class="nav-link">Зарегистрироваться</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a th:href="@{/conversions}" class="nav-link">История конвертаций валют</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <span sec:authentication="name" class="navbar-text"></span>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a th:href="@{/logout}" class="nav-link">Выйти</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div th:replace="~{fragments/header::header}"></div>
     <div class="container mt-5 pt-5">
         <h1>Конвертер валют</h1>
         <form th:action="@{/converter}" method="post" id="converter-form">

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+</head>
+<body>
+    <form id="demo-form" method="post">
+        <input id="demo-id" type="text" name="id" placeholder="ID"/>
+        <br/>
+        <input id="demo-title" type="text" name="title" placeholder="Default title"/>
+        <br/>
+        <button type="submit">Отправить</button>
+    </form>
+    <p id="title"></p>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script>
+        $("#demo-form").submit(function (event) {
+            event.preventDefault();
+            console.log("!!!");
+            const data = {
+                id: $("#demo-id").val(),
+                title: $("#demo-title").val()
+            };
+            $.ajax({
+                url: "/demo",
+                method: "POST",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                success: function (response) {
+                    $("#title").text(response.title);
+                },
+                error: function () {
+                    alert("Что-то пошло не так");
+                }
+            });
+            return false;
+        });
+    </script>
+</body>
+</html>
