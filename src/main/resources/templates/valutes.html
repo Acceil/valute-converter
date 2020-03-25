@@ -15,6 +15,7 @@
                     <th>Код</th>
                     <th>Наименование</th>
                     <th>Номинал</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,12 @@
                     <td th:text="${valute.charCode}"></td>
                     <td th:text="${valute.name}"></td>
                     <td th:text="${valute.nominal}"></td>
+                    <td>
+                        <a th:href="@{/like/valute/} + ${valute.id}" class="js-like" sec:authorize="isAuthenticated()">
+                            <i class="far fa-heart"></i>
+                            <i class="fas fa-heart"></i>
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -34,5 +41,27 @@
     </div>
     <script th:src="@{/js/jquery.js}"></script>
     <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/fontawesome.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $(".fa-heart.fas").hide();
+            $(".js-like").click(function (event) {
+                event.preventDefault();
+                const like = $(event.currentTarget);
+                $.ajax({
+                    url: like.attr("href"),
+                    method: "POST",
+                    success: function (response) {
+                        console.log(response);
+                        if (response) {
+                            like.find(".fa-heart").attr("data-prefix", "fas");
+                        } else {
+                            like.find(".fa-heart").attr("data-prefix", "far");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
