@@ -5,6 +5,7 @@ import org.itstep.msk.app.enums.Role;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -48,5 +49,16 @@ public class User {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public Set<String> getStringRoles() {
+        return roles.stream().map(Enum::toString).collect(Collectors.toSet());
+    }
+
+    public void setStringRoles(Set<String> stringRoles) {
+        roles.clear();
+        for (String stringRole : stringRoles) {
+            roles.add(Role.valueOf(stringRole));
+        }
     }
 }
