@@ -3,6 +3,8 @@ package org.itstep.msk.app.entity;
 import org.itstep.msk.app.enums.Role;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +28,16 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+
+    @Column(columnDefinition = "BIT")
+    private Boolean active = false;
+
+    @Column(name = "confirm_code")
+    private String confirmCode;
+
+    @Column(name = "confirm_expired")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date confirmExpired;
 
     public Integer getId() {
         return id;
@@ -60,5 +72,29 @@ public class User {
         for (String stringRole : stringRoles) {
             roles.add(Role.valueOf(stringRole));
         }
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public String getConfirmCode() {
+        return confirmCode;
+    }
+
+    public void setConfirmCode(String confirmCode) {
+        this.confirmCode = confirmCode;
+    }
+
+    public Date getConfirmExpired() {
+        return confirmExpired;
+    }
+
+    public void setConfirmExpired(Date confirmExpired) {
+        this.confirmExpired = confirmExpired;
     }
 }

@@ -7,3 +7,6 @@ db_name=app
 db_username=root
 db_password=
 db_show_sql=true
+
+mail_username=
+mail_password=

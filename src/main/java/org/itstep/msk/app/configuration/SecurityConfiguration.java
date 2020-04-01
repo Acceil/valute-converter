@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // Запрос пользователя для аутентификации
-        String usersQuery = "SELECT email, password, 1 as active FROM users WHERE email = ?";
+        String usersQuery = "SELECT email, password, active FROM users WHERE email = ?";
         // Запрос ролей пользователя для авторизации
         String authoritiesQuery =
                 "SELECT u.email, ur.role "

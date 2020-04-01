@@ -62,6 +62,13 @@
                 });
             });
         });
+
+
+        link.click(function (event) {
+            if (!confirm("Удалить?")) {
+                event.preventDefault();
+            }
+        }
     </script>
 </body>
 </html>
