@@ -1,17 +1,28 @@
 package org.itstep.msk.app.controller;
 
-import net.bytebuddy.utility.RandomString;
-import org.hibernate.id.GUIDGenerator;
+import org.itstep.msk.app.entity.Upload;
 import org.itstep.msk.app.entity.User;
 import org.itstep.msk.app.enums.Role;
+import org.itstep.msk.app.exception.NotFoundException;
+import org.itstep.msk.app.repository.UploadRepository;
 import org.itstep.msk.app.repository.UserRepository;
 import org.itstep.msk.app.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Controller
@@ -20,10 +31,16 @@ public class SecurityController {
     private UserRepository userRepository;
 
     @Autowired
+    private UploadRepository uploadRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private MailService mailService;
+
+    @Value("${app.uploads.path}")
+    private String uploadsPath;
 
     @GetMapping("/login")
     public String login(@RequestParam(defaultValue = "false") String error, Model model) {
@@ -83,6 +100,53 @@ public class SecurityController {
         }
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Authentication authentication, Model model) {
+        User user = userRepository.findByEmail(authentication.getName());
+
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+
+        return "admin/user/edit";
+    }
+
+    @PostMapping("/avatar")
+    public String avatar(Authentication authentication, @RequestParam("file") MultipartFile file) throws IOException {
+        User user = userRepository.findByEmail(authentication.getName());
+
+        String filename = UUID.randomUUID().toString();
+        Path path = Paths.get(uploadsPath).toAbsolutePath().resolve(filename);
+
+        file.transferTo(path.toFile());
+
+        Upload upload = new Upload();
+        upload.setFilename(filename);
+        upload.setOriginalFilename(file.getOriginalFilename());
+        upload.setContentType(file.getContentType());
+
+        uploadRepository.save(upload);
+        uploadRepository.flush();
+
+        user.setAvatar(upload);
+        userRepository.save(user);
+        userRepository.flush();
+
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/uploads/{uploadId}")
+    @ResponseBody
+    public ResponseEntity<Resource> upload(@PathVariable("uploadId") Upload upload) throws MalformedURLException {
+        Path path = Paths.get(uploadsPath).toAbsolutePath().resolve(upload.getFilename());
+        Resource file = new UrlResource(path.toUri());
+
+        if (!file.exists() || !file.isReadable()) {
+            throw new NotFoundException();
+        }
+
+        return ResponseEntity.ok().body(file);
     }
 
     private String generateConfirmCode() {

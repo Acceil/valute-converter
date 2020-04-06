@@ -10,3 +10,5 @@ db_show_sql=true
 
 mail_username=
 mail_password=
+
+uploads_path=

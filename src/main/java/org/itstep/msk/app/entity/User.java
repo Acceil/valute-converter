@@ -39,6 +39,10 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date confirmExpired;
 
+    @OneToOne(targetEntity = Upload.class)
+    @JoinColumn(name = "avatar_id", referencedColumnName = "id")
+    private Upload avatar;
+
     public Integer getId() {
         return id;
     }
@@ -96,5 +100,13 @@ public class User {
 
     public void setConfirmExpired(Date confirmExpired) {
         this.confirmExpired = confirmExpired;
+    }
+
+    public Upload getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Upload avatar) {
+        this.avatar = avatar;
     }
 }
