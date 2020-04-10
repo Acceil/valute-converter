@@ -3,18 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Регистрация</title>
+    <style>
+        .error { color: red; text-width: bold; }
+    </style>
 </head>
 <body>
     <h1>Регистрация</h1>
-    <form th:action="@{/registration}" method="post">
-        <span th:if="${same}" style="color:red;text-width:bold">Такой пользователь уже существует!</span>
+    <form th:action="@{/registration}" method="post" th:object="${user}">
+        <span th:if="${same}" class="error">Такой пользователь уже существует!</span>
         <br/>
         E-mail:
-        <input type="text" name="email"/>
+        <input type="text" th:field="*{email}"/>
         <br/>
+        <ul th:if="${errors.containsKey('email')}">
+            <li th:each="error : ${errors.get('email')}" th:text="${error}" class="error"></li>
+        </ul>
         Пароль:
         <input type="password" name="password"/>
         <br/>
+        <ul th:if="${errors.containsKey('password')}">
+            <li th:each="error : ${errors.get('password')}" th:text="${error}" class="error"></li>
+        </ul>
         <button type="submit">Зарегистрироваться</button>
     </form>
 </body>

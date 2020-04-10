@@ -16,9 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -52,15 +55,37 @@ public class SecurityController {
     @GetMapping("/registration") // http://localhost:9999/registration?same=true
     public String registration(@RequestParam(defaultValue = "false") String same, Model model) {
         model.addAttribute("same", same.equalsIgnoreCase("true"));
+        model.addAttribute("errors", new HashMap<>());
+        model.addAttribute("user", new User());
 
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String register(@ModelAttribute User user) throws Exception {
+    public String register(@Valid @ModelAttribute User user, BindingResult bindingResult, Model model) throws Exception {
         User same = userRepository.findByEmail(user.getEmail());
         if (same != null) {
-            return "redirect:/registration?same=true";
+            bindingResult.addError(
+                    new FieldError("user", "email", "Пользователь с таким адресом электронной почты уже существует")
+            );
+        }
+
+        if (bindingResult.hasErrors()) {
+            Map<String, List<String>> errors = new HashMap<>();
+
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                if (!errors.containsKey(error.getField())) {
+                    errors.put(error.getField(), new ArrayList<>());
+                }
+
+                // Поле: сообщение об ошибке
+                errors.get(error.getField()).add(error.getDefaultMessage());
+            }
+
+            model.addAttribute("errors", errors);
+            model.addAttribute("user", user);
+
+            return "registration";
         }
 
         user.getRoles().add(Role.ROLE_USER);

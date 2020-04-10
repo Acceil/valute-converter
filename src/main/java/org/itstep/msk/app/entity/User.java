@@ -3,7 +3,9 @@ package org.itstep.msk.app.entity;
 import org.itstep.msk.app.enums.Role;
 
 import javax.persistence.*;
-import java.sql.Time;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,9 +20,14 @@ public class User {
     private Integer id;
 
     @Column(unique = true)
+    @NotEmpty(message = "Адрес электронной почты не может быть пустым")
+    @Size(min = 5, max = 255, message = "Некорректная длина адреса электронной почты")
+    @Pattern(regexp = "^([^@]+)@([^@]+)$", message = "Некорректный адрес электронной почты")
     private String email;
 
     @Column
+    @NotEmpty(message = "Пароль не может быть пустым")
+    @Size(min = 2, message = "Пароль не может быть менее 2 символов")
     private String password;
 
     @ElementCollection(targetClass = Role.class)
